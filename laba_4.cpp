@@ -42,8 +42,8 @@ void Print(Node* b) {
 void push_left(Node** head, int value) /*Первая функция*/
 {
     Node* a = (Node*)malloc(sizeof(Node));
-    a->next = *head;
     a->value = value;
+    a->next = *head;
     *head = a;
 }
 
@@ -71,36 +71,22 @@ int pop(Node** head, int index) /*Третья функция*/
         free(i);
         return a;
     }
+
     if (index != 0)
     {
-        Node* ind_i = (Node*)malloc(sizeof(Node));
-        ind_i = *head;
-        int* ind_index = (int*)malloc(sizeof(int));
-        Node* ind_pre = (Node*)malloc(sizeof(Node));
-        for (int i = 0; i < index + 1; ++i)
+        Node* ind_i = *head;
+        for (int i = 0; i < index; ++i)
         {
-            if (i == index - 1)
+            if (ind_i->next != NULL)
             {
-                ind_pre = ind_i;
-            }
-            if (i == index)
-            {
-                *ind_index = ind_i->value;
-                if (ind_i->next != NULL)
+                if (i == index - 1)
                 {
-                    ind_pre->next = ind_i->next;
+                    int num = (ind_i->next)->value;
+                    Node* a = ind_i->next;
+                    ind_i->next = ind_i->next->next;
+                    free(a);
+                    return num;
                 }
-                else
-                {
-                    ind_pre->next = NULL;
-                }
-                free(ind_i);
-                return *ind_index;
-                free(ind_index);
-                free(ind_pre);
-            }
-            if (ind_i != NULL)
-            {
                 ind_i = ind_i->next;
             }
         }
@@ -110,8 +96,7 @@ int pop(Node** head, int index) /*Третья функция*/
 
 void remove(Node** head, int value) /*Четвёртая функция*/
 {
-    Node* ind_i = (*head)->next;
-    Node* ind_prev = *head;
+    Node* ind_i = *head;
     if ((*head)->value == value)
     {
         Node* a = *head;
@@ -120,15 +105,15 @@ void remove(Node** head, int value) /*Четвёртая функция*/
     }
     else
     {
-        while (ind_i != NULL)
+        while (ind_i->next != NULL)
         {
-            if (ind_i->value == value)
+            if ((ind_i->next)->value == value)
             {
-                ind_prev->next = ind_i->next;
-                free(ind_i);
+                Node *a = ind_i->next;
+                ind_i->next = ind_i->next->next;
+                free(a);
                 break;
             }
-            ind_prev = ind_prev->next;
             ind_i = ind_i->next;
         }
     }
@@ -143,24 +128,20 @@ void remove_all(Node** head, int value) /*Пятая функция*/
         free(a);
     }
 
-    Node* ind_i = (*head)->next;
-    Node* ind_prev = *head;
-    while (ind_i != NULL)
+    Node* ind_i = *head;
+    while (ind_i->next != NULL)
     {
-        if (ind_i->value == value)
+        if ((ind_i->next)->value == value)
         {
-            Node* a = ind_i;
-            ind_prev->next = ind_i->next;
-            ind_i = ind_i->next;
+            Node* a = ind_i->next;
+            ind_i->next = ind_i->next->next;
             free(a);
         }
         else
         {
-            ind_prev = ind_prev->next;
             ind_i = ind_i->next;
         }
     }
-
 }
 
 void replace_all(Node* head, int old_value, int new_value) /*Шестая функция*/
@@ -176,36 +157,40 @@ void replace_all(Node* head, int old_value, int new_value) /*Шестая фун
     }
 }
 
-bool unique_check(Node* head, int num)
+bool unique_check(Node* head, int value)
 {
     Node* ind_i = head;
-    bool flag = true;
     while (ind_i != NULL)
     {
-        if (ind_i->value == num)
+        if (ind_i->value == value)
         {
-            flag = false;
+            return false;
         }
         ind_i = ind_i->next;
     }
-    return flag;
+    return true;
 }
 
 int unique(Node* head) /*Седьмая функция*/
 {
     int count = 0;
-    Node* ind_i = head;
     Node* first = (Node*)malloc(sizeof(Node));
     first->value = head->value;
     first->next = NULL;
+    Node* ind_i = head->next;
+    free(head);
+
     while (ind_i != NULL)
     {
         if (unique_check(first, ind_i->value))
         {
             push_left(&first, ind_i->value);
         }
+        Node* a = ind_i;
         ind_i = ind_i->next;
+        free(a);
     }
+
     ind_i = first;
     while (ind_i != NULL)
     {
@@ -217,14 +202,18 @@ int unique(Node* head) /*Седьмая функция*/
 
 void reverse(Node** head) /*Восьмая функция*/
 {
-    Node* ind_i = (*head)->next;
     Node* first = (Node*)malloc(sizeof(Node));
     first->value = (*head)->value;
     first->next = NULL;
+    Node* ind_i = (*head)->next;
+    free(*head);
+
     while (ind_i != NULL)
     {
         push_left(&first, ind_i->value);
+        Node* a = ind_i;
         ind_i = ind_i->next;
+        free(a);
     }
     *head = first;
 }
@@ -251,7 +240,7 @@ int main()
     Print(first);
     /*-------------*/
 
-    cout << pop(&first, 3) << '\n'; /*Третья функция*/
+    cout << pop(&first, 10) << '\n'; /*Третья функция*/
     Print(first);
     cout << '\n';
 
