@@ -23,7 +23,7 @@ int progress_bar(int Now, int Total)
 
 void write_to_file(string input, string file_name)
 {
-    ofstream out("logs/" +  file_name + ".txt", ios::app);
+    ofstream out("calculations/" +  file_name + ".txt", ios::app);
     if (out.is_open())
     {
         out << input;

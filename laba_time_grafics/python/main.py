@@ -20,7 +20,7 @@ def save(name='', fmt='png'):
 for path in files:
     x = []
     y = []
-    for line in open(os.path.join('..', 'logs', path)):
+    for line in open(os.path.join('..', 'calculations', path)):
         tmp = line.strip('\n').split()
         x.append(float(tmp[0]))
         y.append(float(tmp[1]))
