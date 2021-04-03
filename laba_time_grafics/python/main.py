@@ -30,7 +30,7 @@ for path in files:
 
     ax.plot(x, y)
     ax.yaxis.set_label_position('left')
-    ax.set_ylabel(u'Время, ms', rotation=90)
+    ax.set_ylabel(u'Время, ns', rotation=90)
 
     ax.xaxis.set_label_position('bottom')
     ax.set_xlabel(u'Количество элементов массива')
