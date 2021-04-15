@@ -1,0 +1,15 @@
+digraph {
+15 -> 5 [label=l] ;
+5 -> 2 [label=l] ;
+2 -> 3 [label=r] ;
+5 -> 10 [label=r] ;
+10 -> 12 [label=r] ;
+15 -> 28 [label=r] ;
+28 -> 25 [label=l] ;
+25 -> 21 [label=l] ;
+21 -> 23 [label=r] ;
+25 -> 26 [label=r] ;
+28 -> 37 [label=r] ;
+37 -> 36 [label=l] ;
+37 -> 39 [label=r] ;
+}
