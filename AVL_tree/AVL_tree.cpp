@@ -14,13 +14,18 @@ struct TreeNode // структура узлов дерева
 	TreeNode* right;
 	TreeNode(int k)
 	{
-		key = k; left = right = NULL; height = 1;
+		key = k; height = 1; left = right = NULL;
 	}
 };
 
 unsigned char height(TreeNode* p) //  высота дерева p (0, если NULL)
 {
-	return p ? p->height : 0;
+	if (p) {
+		return p->height;
+	}
+	else {
+		return 0;
+	}
 }
 
 int bFactor(TreeNode* p) // разность высот правого и левого поддеревьев
@@ -30,7 +35,12 @@ int bFactor(TreeNode* p) // разность высот правого и лев
 
 void fixHeight(TreeNode* p) // устанавливает правильную высоту дерева с корнем p
 {
-	p->height = (height(p->left) > height(p->right) ? height(p->left) : height(p->right)) + 1;
+	if (height(p->left) > height(p->right)) {
+		p->height = height(p->left) + 1;
+	}
+	else {
+		p->height = height(p->right) + 1;
+	}
 }
 
 TreeNode* rotateRight(TreeNode* p) // правый поворот вокруг p
@@ -82,12 +92,17 @@ TreeNode* insert(TreeNode* p, int k) // вставка ключа k в дере�
 	else {
 		p->right = insert(p->right, k);
 	}
-	return balance(p);
+	return balance(p); // балансируем после вставки
 }
 
 TreeNode* findMin(TreeNode* p) // поиск узла с минимальным ключом в дереве p (самый левый)
 {
-	return p->left ? findMin(p->left) : p;
+	if (p->left) {
+		return findMin(p->left);
+	}
+	else {
+		return p;
+	}
 }
 
 TreeNode* removeMin(TreeNode* p) // удаление узла с минимальным ключом из дерева p (самый левый)
@@ -112,7 +127,7 @@ TreeNode* remove(TreeNode* p, int k) // удаление ключа k из де�
 		TreeNode* l = p->left;
 		TreeNode* r = p->right;
 		delete p;
-		if (!r) { // если не правого поддерева
+		if (!r) { // если нет правого поддерева
 			return l;
 		}
 		TreeNode* min = findMin(r); // если есть то делаем замену
@@ -160,7 +175,7 @@ void graphCheck(vector<pair<int, int>>* v, TreeNode* p) // перебор все
 
 void writeDot(string fname, vector<pair<int, int>> v) //  для записи в .dot можно визуализировать на http://www.webgraphviz.com/
 {
-	ofstream out("dot files/" + fname, ios::app);
+	ofstream out("dot files + pictures of graph/" + fname, ios::app);
 	out << "digraph {\n";
 	for (size_t i = 0; i < v.size(); ++i) {
 		if (v[i].first < v[i].second) {
@@ -170,6 +185,15 @@ void writeDot(string fname, vector<pair<int, int>> v) //  для записи в
 		}
 	}
 	out << "}\n";
+}
+
+void writeToFile(string input, string file_name) // запись в файл
+{
+	ofstream out("calculations/" + file_name + ".txt", ios::app);
+	if (out.is_open()) {
+		out << input;
+	}
+	out.close();
 }
 
 int progressBar(int now, int total) // прогресс бар
@@ -186,14 +210,6 @@ int progressBar(int now, int total) // прогресс бар
 	return 0;
 }
 
-void writeToFile(string input, string file_name) // запись в файл
-{
-	ofstream out("calculations/" + file_name + ".txt", ios::app);
-	if (out.is_open()) {
-		out << input;
-	}
-	out.close();
-}
 
 int main()
 {
@@ -205,6 +221,13 @@ int main()
 	auto end = high_resolution_clock::now(); // таймер
 
 	ofstream ofs;
+
+	ofs.open("dot files + pictures of graph/graph.dot", ofstream::out | ofstream::trunc);
+	ofs.close();
+
+	ofs.open("dot files + pictures of graph/graph_delete.dot", ofstream::out | ofstream::trunc);
+	ofs.close();
+
 	ofs.open("calculations/graphInsert.txt", ofstream::out | ofstream::trunc);
 	ofs.close();
 
@@ -216,10 +239,11 @@ int main()
 
 	// пример для построения картинки
 	TreeNode* root1 = NULL;
+	int count_1 = 20;
 
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < count_1; ++i)
 	{
-		int paste = rand() % (20 * 2) + 1; // рандомное число от 1 до count * 2
+		int paste = rand() % (count_1 * 2) + 1; // рандомное число от 1 до count_1 * 2
 		if (!search(root1, paste)) {
 			root1 = insert(root1, paste);
 		}
@@ -228,9 +252,9 @@ int main()
 	graphCheck(&graph_pairs, root1);
 	writeDot("graph.dot", graph_pairs);
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < count_1 / 2; ++i)
 	{
-		int del = rand() % (10 * 2) + 1; // рандомное число от 1 до 20
+		int del = rand() % (count_1) + 1; // рандомное число от 1 до count_1
 		if (search(root1, del)) {
 			root1 = remove(root1, del);
 		}
@@ -241,7 +265,7 @@ int main()
 
 	cout << "Graph for picture done" << endl;
 
-	int count = 10000; // сколько элементов обсчитывать
+	int count = 1000; // сколько элементов обсчитывать
 
 	TreeNode* root2 = NULL;
 

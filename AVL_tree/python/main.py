@@ -20,7 +20,7 @@ for path in files:
     y = []
     for line in open(os.path.join('..', 'calculations', path)):
         tmp = line.strip('\n').split()
-        x.append(float(tmp[0]))
+        x.append(int(tmp[0]))
         y.append(float(tmp[1]))
     fig = plt.figure()
 
@@ -32,7 +32,7 @@ for path in files:
 
     ax.xaxis.set_label_position('bottom')
     ax.set_xlabel(u'Количество элементов графа')
-    ax.set_title(path)
+    ax.set_title(path.replace(".txt", ""))
     ax.grid(True)
     save(path, fmt='png')
     '''plt.show()'''
